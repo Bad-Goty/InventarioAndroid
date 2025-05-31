@@ -1,0 +1,130 @@
+package com.example.inventario.presentation.components.viewscpu
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.inventario.presentation.components.MyScaffold
+
+@Composable
+fun ContenedorCPU(navController: NavController) {
+    MyScaffold(
+        Titutlo = "CPU",
+        onFabClick = {/*TODO*/},
+    ) {innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.primary)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CajaConBuscador()
+
+            for (a in 0..15 ){
+                CardsCPUs(navController)
+            }
+        }
+    }
+}
+
+
+@Composable
+fun CajaConBuscador() {
+    var texto by rememberSaveable { mutableStateOf("") }
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(80.dp)
+            .padding(10.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .background(Color.White)
+    ) {
+        Row(
+
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 10.dp),
+
+            verticalAlignment = Alignment.CenterVertically
+
+        ) {
+
+            OutlinedTextField(
+                value = texto,
+                onValueChange = { texto = it },
+                modifier = Modifier.weight(1f),
+                placeholder = { Text("Buscar...") },
+                singleLine = true, //←evita el salto de línea
+                colors = OutlinedTextFieldDefaults.colors(
+
+                    cursorColor = Color.Black,
+
+                    unfocusedBorderColor = Color.White,
+                    focusedBorderColor = Color.White,
+
+                    unfocusedTextColor = Color.Black,
+                    focusedTextColor = Color.Black,
+
+                )
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Button(
+                onClick = { /* Acción para buscar QR */ },
+                modifier = Modifier.size(50.dp),
+                contentPadding = PaddingValues(0.dp), // para que el ícono no tenga relleno extra
+                shape = RoundedCornerShape(20.dp),
+                colors =  ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF1C71C5),
+                    contentColor = Color.White,
+                    disabledContentColor = Color.Black
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Buscar QR",
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+        }
+    }
+}
+
+
+
