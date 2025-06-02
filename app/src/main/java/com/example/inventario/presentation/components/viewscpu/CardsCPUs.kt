@@ -81,6 +81,7 @@ fun CardsCPUs(navController: NavController) {
                     fontWeight = FontWeight.Bold,
                     fontSize = 30.sp,
                     textAlign = TextAlign.Center,
+                    color = Color.White,
                     modifier = Modifier.fillMaxWidth()
                         .drawBehind {
                             val strokeWidth = 3.dp.toPx()
@@ -94,9 +95,9 @@ fun CardsCPUs(navController: NavController) {
                         }
                 )
 
-                Text(Responsable)
-                Text(Area)
-                Text(Modelo)
+                Text(Responsable, color = Color.White)
+                Text(Area, color = Color.White)
+                Text(Modelo, color = Color.White)
             }
         }
     }
