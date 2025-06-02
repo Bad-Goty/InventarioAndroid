@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -30,6 +32,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun MyScaffold(
     Titutlo: String,
     onFabClick: () -> Unit = {},
+    fabIcon: ImageVector = Icons.Filled.QrCode2, // Ícono por defecto
     showFab: Boolean = true,
     content: @Composable (PaddingValues) -> Unit
 ) {
@@ -61,7 +64,7 @@ fun MyScaffold(
                 onClick = {},
                 containerColor = Color(0xFF1C71C5)
             ) {
-                Icon(Icons.Filled.QrCode2, contentDescription = "Buscar QR", Modifier.size(35.dp))
+                Icon(imageVector = fabIcon, contentDescription = "Buscar QR", Modifier.size(35.dp))
             }
         }
 
