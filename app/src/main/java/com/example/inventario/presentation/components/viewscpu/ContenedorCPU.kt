@@ -1,6 +1,7 @@
 package com.example.inventario.presentation.components.viewscpu
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,29 +18,43 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.inventario.presentation.components.MyScaffold
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContenedorCPU(navController: NavController) {
+    var mostrarBottomSheet by remember { mutableStateOf(false) }
+
     MyScaffold(
         Titutlo = "CPU",
         onFabClick = {/*TODO*/},
@@ -52,18 +67,34 @@ fun ContenedorCPU(navController: NavController) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CajaConBuscador()
+            CajaConBuscador(
+                onMostrarBottomSheet = { mostrarBottomSheet = true }
+            )
 
             for (a in 0..15 ){
                 CardsCPUs(navController)
             }
         }
     }
+
+    // Bottom Sheet
+    if (mostrarBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { mostrarBottomSheet = false },
+            sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = false
+            ),
+            containerColor = Color.White,
+            contentColor = Color.Black
+        ) {
+            ContenidoDelBottomSheet()
+        }
+    }
 }
 
 
 @Composable
-fun CajaConBuscador() {
+fun CajaConBuscador(onMostrarBottomSheet: () -> Unit) {
     var texto by rememberSaveable { mutableStateOf("") }
 
     Box(
@@ -106,7 +137,7 @@ fun CajaConBuscador() {
             Spacer(modifier = Modifier.width(8.dp))
 
             Button(
-                onClick = { /* Acción para buscar QR */ },
+                onClick = {  onMostrarBottomSheet() },
                 modifier = Modifier.size(50.dp),
                 contentPadding = PaddingValues(0.dp), // para que el ícono no tenga relleno extra
                 shape = RoundedCornerShape(20.dp),
@@ -126,5 +157,23 @@ fun CajaConBuscador() {
     }
 }
 
+// Contenido del Bottom Sheet
+@Composable
+fun ContenidoDelBottomSheet() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .background(Color.White)
+            .verticalScroll(rememberScrollState())
+    ) {
+        for (a in 0 .. 20)
+        Text("Filtros",
+            Modifier.fillMaxSize(),
+            textAlign = TextAlign.Center,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold)
+    }
+}
 
 
