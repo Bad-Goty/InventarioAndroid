@@ -1,6 +1,5 @@
 package com.example.inventario.presentation.components.viewscpu
 
-import android.hardware.Camera.Area
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,59 +29,65 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.inventario.R
+import com.example.inventario.data.model.modelcpu.CPUS
 
 @Composable
-fun CardsCPUs(navController: NavController) {
-    val NoSerie = "2052Z32"
-    val Responsable = "Responsable: Leonardo"
-    val Area = "Area: Administracion"
-    val Modelo = "Modelo: Optiplex 3090"
-    Card(Modifier
-        .fillMaxWidth()
-        .height(140.dp)
-        .padding(10.dp)
-        .border(
-            width = 2.dp,
-            color = Color.Black,
-            shape = RoundedCornerShape(8.dp)
-        )
-        .clickable{
-            navController.navigate("cpus")
-        },
+fun CardsCPUs(navController: NavController, equipo: CPUS) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .padding(10.dp)
+            .border(
+                width = 2.dp,
+                color = Color.Black,
+                shape = RoundedCornerShape(8.dp)
+            )
+            .clickable {
+                navController.navigate("cpus")
+            },
         shape = RoundedCornerShape(8.dp),
-
         colors = CardDefaults.cardColors(
             containerColor = Color.White
         )
     ) {
         Row {
-            Box(modifier = Modifier.fillMaxSize().weight(1f), contentAlignment = Alignment.Center) {
-                Image(painter = painterResource(R.drawable.hp),
-                    contentDescription = "Logo Dell",
-                    modifier = Modifier.size(120.dp).padding(10.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    painter = painterResource(
+                        when (equipo.Marca.lowercase()) {
+                            "dell" -> R.drawable.hp // Cambia por tu drawable de Dell
+                            "hp" -> R.drawable.hp
+                            else -> R.drawable.hp // Imagen por defecto
+                        }
+                    ),
+                    contentDescription = "Logo ${equipo.Marca}",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(10.dp)
+                )
             }
 
-            Column(Modifier
-                .fillMaxSize()
-                .weight(2f)
-                .background(Color.Black)
-                /*.drawBehind {
-                    val strokeWidth = 3.dp.toPx()
-                    val x = strokeWidth / 2 // ← Posición X (izquierda)
-                    drawLine(
-                        color = Color.Red,
-                        start = Offset(x, 0f),
-                        end = Offset(x, size.height),
-                        strokeWidth = strokeWidth
-                    )
-                }*/
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(2f)
+                    .background(Color.Black)
             ) {
-                Text("2052Z32",
+                // Número de serie del equipo real
+                Text(
+                    text = equipo.NoSerie,
                     fontWeight = FontWeight.Bold,
                     fontSize = 30.sp,
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .drawBehind {
                             val strokeWidth = 3.dp.toPx()
                             val y = size.height - strokeWidth / 2
@@ -95,9 +100,25 @@ fun CardsCPUs(navController: NavController) {
                         }
                 )
 
-                Text(Responsable, color = Color.White)
-                Text(Area, color = Color.White)
-                Text(Modelo, color = Color.White)
+                // Datos reales del equipo
+                Text(
+                    text = "Responsable: ${equipo.Responsable}",
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
+                Text(
+                    text = "Área: ${equipo.Area}",
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
+                Text(
+                    text = "Modelo: ${equipo.Modelo}",
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
             }
         }
     }

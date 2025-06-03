@@ -3,7 +3,7 @@ package com.example.inventario.data.model.modelcpu
 import com.google.gson.annotations.SerializedName
 
 data class CPUS (
-    @SerializedName("Noserie")
+    @SerializedName("NoSerie")
     val NoSerie: String,
     val Responsable: Int,
     val Factura: String?,

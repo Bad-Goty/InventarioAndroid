@@ -1,7 +1,6 @@
 package com.example.inventario.presentation.components.viewscpu
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,22 +17,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,16 +47,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.inventario.presentation.components.MyScaffold
+import com.example.inventario.presentation.viewmodel.EquiposViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContenedorCPU(navController: NavController) {
+fun ContenedorCPU(navController: NavController, viewModel: EquiposViewModel) {
     var mostrarBottomSheet by remember { mutableStateOf(false) }
+
+    // Obtener los datos del ViewModel
+    val equipos by viewModel.equipos
+    val loading by viewModel.loading
+    val error by viewModel.error
+
+    // Cargar datos al entrar a la pantalla
+    LaunchedEffect(Unit) {
+        viewModel.fetchEquipos()
+    }
 
     MyScaffold(
         Titutlo = "CPU",
         onFabClick = {/*TODO*/},
-    ) {innerPadding ->
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -71,8 +80,54 @@ fun ContenedorCPU(navController: NavController) {
                 onMostrarBottomSheet = { mostrarBottomSheet = true }
             )
 
-            for (a in 0..15 ){
-                CardsCPUs(navController)
+            when {
+                loading -> {
+                    // Mostrar indicador de carga
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(color = Color.White)
+                    }
+                }
+
+                error != null -> {
+                    // Mostrar error
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Red.copy(alpha = 0.1f)
+                        )
+                    ) {
+                        Text(
+                            text = "Error: $error",
+                            color = Color.Red,
+                            modifier = Modifier.padding(16.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                equipos.isEmpty() -> {
+                    // No hay datos
+                    Text(
+                        text = "No hay equipos disponibles",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        modifier = Modifier.padding(20.dp)
+                    )
+                }
+
+                else -> {
+                    // Mostrar los equipos reales (reemplaza el for loop)
+                    equipos.forEach { equipo ->
+                        CardsCPUs(navController, equipo)
+                    }
+                }
             }
         }
     }
@@ -91,7 +146,6 @@ fun ContenedorCPU(navController: NavController) {
         }
     }
 }
-
 
 @Composable
 fun CajaConBuscador(onMostrarBottomSheet: () -> Unit) {

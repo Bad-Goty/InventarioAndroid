@@ -19,8 +19,6 @@ import com.example.inventario.R
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -31,9 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.inventario.presentation.components.MyScaffold
+import com.example.inventario.presentation.viewmodel.EquiposViewModel
 
 @Composable
-fun DetalleCPU(navController: NavController) {
+fun DetalleCPU(navController: NavController, equiposViewModel: EquiposViewModel) {
     val NoSerie = "2052Z32"
     MyScaffold(
         Titutlo = NoSerie,

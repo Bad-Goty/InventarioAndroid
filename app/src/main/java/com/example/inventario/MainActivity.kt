@@ -6,12 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.EnterTransition
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.inventario.presentation.components.viewscpu.ContenedorCPU
 import com.example.inventario.presentation.components.viewscpu.DetalleCPU
 import com.example.inventario.presentation.ui.theme.InventarioTheme
+import com.example.inventario.presentation.viewmodel.EquiposViewModel
 import com.example.inventario.presentation.views.ContenedorPincipal
 
 class MainActivity : ComponentActivity() {
@@ -20,9 +22,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             InventarioTheme {
+                //EquiposScreen()
 
                 // Crear el NavController
                 val navController = rememberNavController()
+                val equiposViewModel: EquiposViewModel = viewModel()
 
                 // Configurar la navegación
                 NavHost(
@@ -41,17 +45,16 @@ class MainActivity : ComponentActivity() {
 
 
                     composable("cpu") {
-                        ContenedorCPU(navController)
+                        ContenedorCPU(navController, equiposViewModel)
                     }
 
 
                     composable("cpus") {
-                        DetalleCPU(navController)
+                        DetalleCPU(navController, equiposViewModel)
                     }
 
 
                 }
-
             }
         }
     }
