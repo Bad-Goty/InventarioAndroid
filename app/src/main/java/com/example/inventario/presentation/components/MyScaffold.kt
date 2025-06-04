@@ -61,7 +61,7 @@ fun MyScaffold(
 
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {},
+                onClick = onFabClick, // ← CAMBIO AQUÍ: usar el parámetro
                 containerColor = Color(0xFF1C71C5)
             ) {
                 Icon(imageVector = fabIcon, contentDescription = "Buscar QR", Modifier.size(35.dp))

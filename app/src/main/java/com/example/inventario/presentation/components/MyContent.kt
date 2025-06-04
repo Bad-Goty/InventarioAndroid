@@ -16,6 +16,7 @@ import com.example.inventario.presentation.components.cards.CardImpresora
 import com.example.inventario.presentation.components.cards.CardMonitor
 import com.example.inventario.presentation.components.cards.CardTabletTelefono
 import com.example.inventario.presentation.components.cards.CardWifi
+import com.example.inventario.presentation.viewmodel.EquiposViewModel
 
 @Composable
 fun MyContent(modifier: Modifier = Modifier, navController: NavController) {

@@ -75,6 +75,18 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-navigation-animation:0.36.0")
 
+
+    // CameraX para la cámara
+    implementation ("androidx.camera:camera-camera2:1.3.1")
+    implementation ("androidx.camera:camera-lifecycle:1.3.1")
+    implementation ("androidx.camera:camera-view:1.3.1")
+
+    // ML Kit para escanear QR
+    implementation ("com.google.mlkit:barcode-scanning:17.2.0")
+
+    // Permisos
+    implementation ("com.google.accompanist:accompanist-permissions:0.32.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.inventario.presentation.components.QRScannerScreen
 import com.example.inventario.presentation.components.viewscpu.ContenedorCPU
 import com.example.inventario.presentation.components.viewscpu.DetalleCPU
 import com.example.inventario.presentation.ui.theme.InventarioTheme
@@ -49,10 +50,25 @@ class MainActivity : ComponentActivity() {
                     }
 
 
-                    composable("cpus") {
-                        DetalleCPU(navController, equiposViewModel)
+                    composable("cpus/{noSerie}") { backStackEntry ->
+                        val noSerie = backStackEntry.arguments?.getString("noSerie") ?: ""
+                        DetalleCPU(navController, equiposViewModel, noSerie)
                     }
 
+                    composable("qr_scanner") {
+                        QRScannerScreen(
+                            onQRScanned = { qrContent ->
+                                // Aquí manejas el resultado del QR
+                                // Puedes navegar a otra pantalla o buscar el equipo
+                                navController.navigate("cpus/$qrContent") {
+                                    popUpTo("cpu") // Regresa a la lista
+                                }
+                            },
+                            onBackPressed = {
+                                navController.popBackStack()
+                            }
+                        )
+                    }
 
                 }
             }

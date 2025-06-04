@@ -1,6 +1,7 @@
 package com.example.inventario.presentation.components.viewscpu
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,9 +15,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -24,6 +30,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
@@ -42,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -54,19 +62,21 @@ import com.example.inventario.presentation.viewmodel.EquiposViewModel
 fun ContenedorCPU(navController: NavController, viewModel: EquiposViewModel) {
     var mostrarBottomSheet by remember { mutableStateOf(false) }
 
-    // Obtener los datos del ViewModel
-    val equipos by viewModel.equipos
+    // Usar equiposFiltrados en lugar de equipos
+    val equiposFiltrados by viewModel.equiposFiltrados
     val loading by viewModel.loading
     val error by viewModel.error
+    val searchQuery by viewModel.searchQuery
 
-    // Cargar datos al entrar a la pantalla
     LaunchedEffect(Unit) {
         viewModel.fetchEquipos()
     }
 
     MyScaffold(
         Titutlo = "CPU",
-        onFabClick = {/*TODO*/},
+        onFabClick = {
+            navController.navigate("qr_scanner")
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -77,12 +87,59 @@ fun ContenedorCPU(navController: NavController, viewModel: EquiposViewModel) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CajaConBuscador(
-                onMostrarBottomSheet = { mostrarBottomSheet = true }
+                onMostrarBottomSheet = { mostrarBottomSheet = true },
+                onSearch = { query ->
+                    viewModel.searchEquipos(query)
+                }
             )
+
+            // Mostrar número de resultados
+            if (searchQuery.isNotEmpty()) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp, vertical = 5.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.9f)
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            "Resultados para: \"$searchQuery\"",
+                            fontWeight = FontWeight.Medium
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                "${equiposFiltrados.size} encontrados",
+                                fontSize = 14.sp,
+                                color = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            IconButton(
+                                onClick = { viewModel.clearSearch() },
+                                modifier = Modifier.size(24.dp)
+                            ) {
+                                Icon(
+                                    Icons.Filled.Clear,
+                                    contentDescription = "Limpiar búsqueda",
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
 
             when {
                 loading -> {
-                    // Mostrar indicador de carga
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -94,7 +151,6 @@ fun ContenedorCPU(navController: NavController, viewModel: EquiposViewModel) {
                 }
 
                 error != null -> {
-                    // Mostrar error
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -112,8 +168,45 @@ fun ContenedorCPU(navController: NavController, viewModel: EquiposViewModel) {
                     }
                 }
 
-                equipos.isEmpty() -> {
-                    // No hay datos
+                equiposFiltrados.isEmpty() && searchQuery.isNotEmpty() -> {
+                    // No hay resultados de búsqueda
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White.copy(alpha = 0.9f)
+                        )
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(24.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                Icons.Filled.SearchOff,
+                                contentDescription = null,
+                                modifier = Modifier.size(48.dp),
+                                tint = Color.Gray
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                "No se encontraron equipos",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                "Intenta con otro término de búsqueda",
+                                fontSize = 14.sp,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                }
+
+                equiposFiltrados.isEmpty() -> {
                     Text(
                         text = "No hay equipos disponibles",
                         color = Color.White,
@@ -123,8 +216,8 @@ fun ContenedorCPU(navController: NavController, viewModel: EquiposViewModel) {
                 }
 
                 else -> {
-                    // Mostrar los equipos reales (reemplaza el for loop)
-                    equipos.forEach { equipo ->
+                    // Mostrar los equipos filtrados
+                    equiposFiltrados.forEach { equipo ->
                         CardsCPUs(navController, equipo)
                     }
                 }
@@ -148,7 +241,10 @@ fun ContenedorCPU(navController: NavController, viewModel: EquiposViewModel) {
 }
 
 @Composable
-fun CajaConBuscador(onMostrarBottomSheet: () -> Unit) {
+fun CajaConBuscador(
+    onMostrarBottomSheet: () -> Unit,
+    onSearch: (String) -> Unit // ← Nueva función para búsqueda
+) {
     var texto by rememberSaveable { mutableStateOf("") }
 
     Box(
@@ -160,42 +256,44 @@ fun CajaConBuscador(onMostrarBottomSheet: () -> Unit) {
             .background(Color.White)
     ) {
         Row(
-
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 10.dp),
-
             verticalAlignment = Alignment.CenterVertically
-
         ) {
-
             OutlinedTextField(
                 value = texto,
                 onValueChange = { texto = it },
                 modifier = Modifier.weight(1f),
-                placeholder = { Text("Buscar...") },
-                singleLine = true, //←evita el salto de línea
+                placeholder = { Text("Buscar por Serie, Responsable o Área...") },
+                singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
-
                     cursorColor = Color.Black,
-
                     unfocusedBorderColor = Color.White,
                     focusedBorderColor = Color.White,
-
                     unfocusedTextColor = Color.Black,
                     focusedTextColor = Color.Black,
-
+                ),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Search // ← Cambiar el botón del teclado a "Buscar"
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        onSearch(texto) // ← Ejecutar búsqueda al presionar el botón del teclado
+                    }
                 )
             )
 
             Spacer(modifier = Modifier.width(8.dp))
 
             Button(
-                onClick = {  onMostrarBottomSheet() },
+                onClick = {
+                    onSearch(texto) // ← También buscar al presionar el botón
+                },
                 modifier = Modifier.size(50.dp),
-                contentPadding = PaddingValues(0.dp), // para que el ícono no tenga relleno extra
+                contentPadding = PaddingValues(0.dp),
                 shape = RoundedCornerShape(20.dp),
-                colors =  ButtonDefaults.buttonColors(
+                colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF1C71C5),
                     contentColor = Color.White,
                     disabledContentColor = Color.Black
@@ -203,7 +301,27 @@ fun CajaConBuscador(onMostrarBottomSheet: () -> Unit) {
             ) {
                 Icon(
                     imageVector = Icons.Filled.Search,
-                    contentDescription = "Buscar QR",
+                    contentDescription = "Buscar",
+                    modifier = Modifier.size(30.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Botón de filtros
+            Button(
+                onClick = { onMostrarBottomSheet() },
+                modifier = Modifier.size(50.dp),
+                contentPadding = PaddingValues(0.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF1C71C5),
+                    contentColor = Color.White,
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.FilterList,
+                    contentDescription = "Filtros",
                     modifier = Modifier.size(30.dp)
                 )
             }

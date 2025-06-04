@@ -44,7 +44,7 @@ fun CardsCPUs(navController: NavController, equipo: CPUS) {
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable {
-                navController.navigate("cpus")
+                navController.navigate("cpus/${equipo.NoSerie}")
             },
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
@@ -60,13 +60,13 @@ fun CardsCPUs(navController: NavController, equipo: CPUS) {
             ) {
                 Image(
                     painter = painterResource(
-                        when (equipo.Marca.lowercase()) {
+                        when (equipo.Marca?.lowercase()) { // ← Agregar ?
                             "dell" -> R.drawable.hp // Cambia por tu drawable de Dell
                             "hp" -> R.drawable.hp
                             else -> R.drawable.hp // Imagen por defecto
                         }
                     ),
-                    contentDescription = "Logo ${equipo.Marca}",
+                    contentDescription = "Logo ${equipo.Marca ?: "Desconocido"}", // ← Manejo de null
                     modifier = Modifier
                         .size(120.dp)
                         .padding(10.dp)
@@ -79,9 +79,8 @@ fun CardsCPUs(navController: NavController, equipo: CPUS) {
                     .weight(2f)
                     .background(Color.Black)
             ) {
-                // Número de serie del equipo real
                 Text(
-                    text = equipo.NoSerie,
+                    text = equipo.NoSerie ?: "Sin serie", // ← Manejo de null
                     fontWeight = FontWeight.Bold,
                     fontSize = 30.sp,
                     textAlign = TextAlign.Center,
@@ -100,21 +99,20 @@ fun CardsCPUs(navController: NavController, equipo: CPUS) {
                         }
                 )
 
-                // Datos reales del equipo
                 Text(
-                    text = "Responsable: ${equipo.Responsable}",
+                    text = "Responsable: ${equipo.Responsable ?: "No asignado"}", // ← Manejo de null
                     color = Color.White,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(horizontal = 4.dp)
                 )
                 Text(
-                    text = "Área: ${equipo.Area}",
+                    text = "Área: ${equipo.Area ?: "No definida"}", // ← Manejo de null
                     color = Color.White,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(horizontal = 4.dp)
                 )
                 Text(
-                    text = "Modelo: ${equipo.Modelo}",
+                    text = "Modelo: ${equipo.Modelo ?: "No definido"}", // ← Manejo de null
                     color = Color.White,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(horizontal = 4.dp)
